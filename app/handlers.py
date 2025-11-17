@@ -9,14 +9,13 @@ import keyboards as KB
 import database.requests as DB
 from aiogram.filters import Command
 from config_reader import config
+from aiogram.filters import CommandStart
 
 router = Router()
 
 bot = Bot(
     token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
-
-from aiogram.filters import CommandStart
 
 
 @router.message(CommandStart(deep_link=True), StateFilter("*"))
@@ -26,11 +25,6 @@ async def handle_start_with_link(
     await state.clear()
     tg_id_1 = message.from_user.id
     code = command.args  # аргумент после /start
-
-    if not code:
-        # Страховка, хотя этот хендлер срабатывает только при наличии аргумента
-        await message.answer("В ссылке нет кода! :o.")
-        return
 
     tg_id_2 = await DB.check_user_link(code)
 
@@ -95,16 +89,10 @@ async def handle_plain_text(message: Message):
 @router.message(Send_message.receive_message)
 async def cmd_messaging(message: Message, state: FSMContext):
     data = await state.get_data()
-    tg_id_2 = data["receive_message"]
+    receiver_tg_id = data["receive_message"]
     answer_button = await KB.create_answer_button(message.from_user.id)  # tg_id_1
     await bot.send_message(text="Кто-то отправил тебе сообщение!: ", chat_id=tg_id_2)
-    await bot.copy_message(
-        caption="Отправленное фото: ",
-        chat_id=tg_id_2,
-        from_chat_id=message.from_user.id,
-        message_id=message.message_id,
-        reply_markup=answer_button,
-    )
+    await message.copy_to(chat_id=receiver_tg_id, reply_markup=answer_button)
     await message.answer("Сообщение отправлено успешно!")
     await state.clear()
 
