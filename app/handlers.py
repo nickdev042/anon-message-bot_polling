@@ -9,15 +9,13 @@ import keyboards as KB
 import database.requests as DB
 from aiogram.filters import Command
 from config_reader import config
+from aiogram.filters import CommandStart
 
 router = Router()
 
 bot = Bot(
     token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
-
-from aiogram.filters import CommandStart
-
 
 @router.message(CommandStart(deep_link=True), StateFilter("*"))
 async def handle_start_with_link(
