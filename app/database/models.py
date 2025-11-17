@@ -14,7 +14,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    tg_id: Mapped = mapped_column(BigInteger, primary_key=True)  # id в TG
+    tg_id: Mapped[str] = mapped_column(BigInteger, primary_key=True)  # id в TG
     link_code: Mapped[str] = mapped_column(
         unique=True
     )  # Cсылка для отправки сообщений этому пользователю

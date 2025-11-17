@@ -13,10 +13,6 @@ from aiogram.filters import CommandStart
 
 router = Router()
 
-bot = Bot(
-    token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-)
-
 from aiogram.filters import CommandStart
 
 
@@ -44,7 +40,7 @@ async def handle_start_with_link(
     await state.set_state(Send_message.receive_message)
     await state.update_data(receive_message=tg_id_2)
 
-
+@router.message(F.text == 'старт')
 @router.message(CommandStart())
 async def handle_start(message: Message, state: FSMContext):
     await state.clear()
@@ -89,11 +85,11 @@ async def handle_plain_text(message: Message):
 
 
 @router.message(Send_message.receive_message)
-async def cmd_messaging(message: Message, state: FSMContext):
+async def cmd_messaging(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     receiver_tg_id = data["receive_message"]
     answer_button = await KB.create_answer_button(message.from_user.id)  # tg_id_1
-    await bot.send_message(text="Кто-то отправил тебе сообщение!: ", chat_id=tg_id_2)
+    await bot.send_message(text="Кто-то отправил тебе сообщение!: ", chat_id=receiver_tg_id)
     await message.copy_to(chat_id=receiver_tg_id, reply_markup=answer_button)
     await message.answer("Сообщение отправлено успешно!")
     await state.clear()
@@ -108,7 +104,7 @@ async def handle_reply_message(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data.startswith("find_out_who="))
-async def handle_reply_message(callback: CallbackQuery, state: FSMContext):
+async def handle_reply_message(callback: CallbackQuery, state: FSMContext, bot: Bot):
     receiver_tg_id = callback.data.split("=")[1]
     user = str(receiver_tg_id)
     userinfo = await bot.get_chat(receiver_tg_id)
@@ -125,7 +121,7 @@ async def handle_reply_message(callback: CallbackQuery, state: FSMContext):
 
 
 @router.message(Answer_message.receive_answer_message)
-async def cmd_messaging(message: Message, state: FSMContext):
+async def cmd_messaging(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     receiver_tg_id = data["receive_answer_message"]
     answer_button = await KB.create_answer_button(message.from_user.id)

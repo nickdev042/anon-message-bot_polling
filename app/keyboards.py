@@ -5,8 +5,8 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
-starting = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="/start")]],
+start = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text="старт")]],
     resize_keyboard=True,  # Автоматически подгоняет размер кнопок
 )
 
