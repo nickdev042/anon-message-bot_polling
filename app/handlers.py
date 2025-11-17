@@ -2,13 +2,10 @@ from aiogram import F, Router, Bot
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
 from states import Send_message, Answer_message, Find_out_who
 import keyboards as KB
 import database.requests as DB
 from aiogram.filters import Command
-from config_reader import config
 from aiogram.filters import CommandStart
 
 router = Router()
@@ -50,7 +47,7 @@ async def handle_start(message: Message, state: FSMContext):
         link_code = await DB.get_link(tg_id)
         await message.answer(
             "Вот твоя ссылка:\n" f"t.me/AnonCuteMessages_bot?start={link_code}",
-            reply_markup=KB.starting,
+            reply_markup=KB.start,
             parse_mode="HTML",
         )
     else:
@@ -59,7 +56,7 @@ async def handle_start(message: Message, state: FSMContext):
             "Привет, рад видеть! Вот твоя новая ссылка:\n"
             f"t.me/AnonCuteMessages_bot?start={link_code}\n"
             "Cкопируй её в профиль и жди сообщений ;)",
-            reply_markup=KB.starting,
+            reply_markup=KB.start,
             parse_mode="HTML",
         )
 
@@ -72,14 +69,14 @@ async def handle_plain_text(message: Message):
         link_code = await DB.get_link(tg_id)
         await message.answer(
             "Вот твоя ссылка:\n" f"t.me/AnonCuteMessages_bot?start={link_code}",
-            reply_markup=KB.starting,
+            reply_markup=KB.start,
             parse_mode="HTML",
         )
     else:
         link_code = await DB.create_user_profile(tg_id)
         await message.answer(
             "Привет! Вот твоя ссылка:\n" f"t.me/AnonCuteMessages_bot?start={link_code}",
-            reply_markup=KB.starting,
+            reply_markup=KB.start,
             parse_mode="HTML",
         )
 
