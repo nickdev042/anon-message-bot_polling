@@ -17,6 +17,8 @@ bot = Bot(
     token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
 
+from aiogram.filters import CommandStart
+
 
 @router.message(CommandStart(deep_link=True), StateFilter("*"))
 async def handle_start_with_link(

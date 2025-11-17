@@ -61,7 +61,7 @@ async def check_user_VIP(new_tg_id) -> bool:
 async def check_user_link(code) -> str:
     async with async_session() as session:
         result = await session.execute(
-            select(User.tg_id).where(and_(User.link_code == code))
+            select(User.tg_id).where(User.link_code == code)
         )
         User_receiver = result.scalar()
         return User_receiver
