@@ -8,8 +8,8 @@ __pycache__/
 venv
 .venv/
 *.session
-data/config.py
-data/database.db
+config.py
+db.sqlite3
 
 # vscode
 .vscode/
